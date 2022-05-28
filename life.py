@@ -2,12 +2,14 @@ from collections import defaultdict
 
 class GAME:
     def __init__(self):
-        self.liveCells=defaultdict(bool)
+        self.liveCells = defaultdict(bool)
+        self.cellCount = 0
+        self.epochs = 0
 
     def next_epoch(self):
         liveCells = defaultdict(bool)
         visCells = defaultdict(bool)
-        movs = [1,0,0,-1,0,1,1,-1,-1,1] # simple way to mov in a 3x3 grid
+        movs = [1, 0, 0, -1, 0, 1, 1, -1, -1, 1] # simple way to mov in a 3x3 grid
 
         for cell in self.liveCells.copy():
             for step in range(9):
@@ -25,6 +27,8 @@ class GAME:
                         liveCells[nCell] = True
 
         self.liveCells = liveCells
+        self.cellCount = len(liveCells)
+        self.epochs += 1
 
 # '''benchmark
 # ❯ python3 -m timeit -s "$code" "Conway.next_epoch()"

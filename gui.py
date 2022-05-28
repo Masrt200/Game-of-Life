@@ -7,30 +7,29 @@ from colors import *
 pygame.init()
 
 # globals
-FPS = 10
-SIDE = 20 # length of cell side including border
-WIDE = 4  # width of cell border
-DIMS = (1200, 750)
+FPS = 20
+SIDE = 12 # length of cell side including border
 
 FramePerSec = pygame.time.Clock()
-surface = pygame.display.set_mode(DIMS, pygame.RESIZABLE)
+FONT = pygame.font.SysFont('inkfree',20, bold=True)
+surface = pygame.display.set_mode((1200, 750), pygame.RESIZABLE)
 
 pygame.display.set_caption("Game of Life")
 
 class Cells(GAME):
-    def __init__(self, surface, dims):
+    def __init__(self, surface, side):
         super().__init__()
         self.surface = surface
-        self.side, self.wide = dims
-        self.color = [WHITE,RANDOM]
+        self.side = side
         self.simulate = False
+        self.color = [RANDOM(),RANDOM()]
 
     def draw(self, pos, fpos, colorBit):
         self.liveCells[pos]=False
         self.liveCells.pop(pos)
         if colorBit:
             self.liveCells[pos]=True
-        pygame.draw.rect(self.surface, self.color[colorBit], (fpos + self.wide, (self.side - self.wide,) * 2))
+        pygame.draw.rect(self.surface, self.color[colorBit], (fpos + 2, (self.side - 2,) * 2))
 
     def msky(self):
         click = pygame.mouse.get_pressed()
@@ -56,42 +55,57 @@ class Cells(GAME):
 # class Button:
 #     def __init__(self) -> None:
 #         pass
+def text(surface, world, font, side):
+    global delta
+    x = surface.get_width()
+    x,y = ((x * 0.75) // side) * side, side * 3
+    text1 = font.render(f'  Live Cells : {world.cellCount}  ',True,CYAN, BLACK)
+    #text1.set_alpha(25)
+    text2 = font.render(f'  Epochs     : {world.epochs}  ',True,CYAN, BLACK)
+    #text2.set_alpha(25)
 
-def grid(surface, world, dims):
-    surface.fill(WHITE)
+    surface.blit(text1, (x, y))
+    surface.blit(text2,(x, y + text1.get_height()))
+
+def grid(surface, world, side):
+    surface.fill(RANDOM())
     x,y = surface.get_size()
-    side, wide = dims
     for i in range(0, y, side): # horizontal lines
-        pygame.draw.line(surface, BLACK, (0,i),(x,i), width = wide)
+        pygame.draw.line(surface, BLACK, (0,i),(x,i), width = 2)
     for i in range(0, x, side): # vertical lines
-        pygame.draw.line(surface, BLACK, (i,0),(i,y), width = wide)
+        pygame.draw.line(surface, BLACK, (i,0),(i,y), width = 2)
     for cell in world.liveCells.copy():
         world.draw(cell, np.array(cell) * SIDE, 1)
 
-world = Cells(surface, (SIDE, WIDE))
-grid(surface, world, (SIDE, WIDE))
+world = Cells(surface, SIDE)
+grid(surface, world, SIDE)
 
 while True:
     pygame.display.update()
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
-            print(world.liveCells)
+            print(world.cellCount)
+            print(world.epochs)
             sys.exit()
         if event.type == pygame.VIDEORESIZE:
             surface = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
             simState, world.simulate = world.simulate, False
-            grid(surface, world, (SIDE, WIDE))
+            grid(surface, world, SIDE)
             world.simulate = simState
             del simState
 
     if world.simulate: world.next_day()
     world.msky()
+    text(surface, world, FONT, SIDE)
     FramePerSec.tick(FPS)
 
-# the map function should draw the entire map again and again
-# and according to the window width and height
+
 
 # make Button class for multiple buttons
 # make a colors.py file
 # add git
+
+# make map movable
+# display stats and buttons
+# scalable cells, size should be increased and decreased
