@@ -1,10 +1,11 @@
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 
 class GAME:
     def __init__(self):
         self.liveCells = defaultdict(bool)
         self.cellCount = 0
         self.epochs = 0
+        self.Point = namedtuple('Point',['x','y'])
 
     def next_epoch(self):
         liveCells = defaultdict(bool)

@@ -1,14 +1,17 @@
+import sys
+
 import numpy as np
-import pygame, sys
+import pygame
 from pygame.locals import *
-from life import GAME
+
 from colors import *
+from life import GAME
 
 pygame.init()
 
 # globals
-FPS = 20
-SIDE = 12 # length of cell side including border
+FPS = 10
+SIDE = 20 # length of cell side including border
 
 FramePerSec = pygame.time.Clock()
 FONT = pygame.font.SysFont('inkfree',20, bold=True)
@@ -106,6 +109,10 @@ while True:
 # make a colors.py file
 # add git
 
-# make map movable
+# make map movable/ zoomable
 # display stats and buttons
 # scalable cells, size should be increased and decreased
+
+# downloadable csv of current state
+# random cell state generator
+# erase all cells currenly in canvas
